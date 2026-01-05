@@ -1,0 +1,33 @@
+{% extends 'pets/base.html' %}
+
+{% block title %}Send Match Request - Pawnder{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h2 style="color: #667eea; margin-bottom: 10px;">Send Match Request</h2>
+    <p style="color: #666; margin-bottom: 30px;">To {{ to_pet.name }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Select Your Pet:</label>
+            <select name="from_pet" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                {% for pet in user_pets %}
+                    <option value="{{ pet.pk }}">{{ pet.name }} ({{ pet.breed }}, {{ pet.get_gender_display }})</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>{{ form.message.label }}:</label>
+            {{ form.message }}
+        </div>
+
+        <div class="form-group" style="display: flex; gap: 10px;">
+            <button type="submit" class="btn">Send Request</button>
+            <a href="{% url 'pet_detail' to_pet.pk %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'pets/base.html' %}
+
+{% block title %}My Favorites - Pawnder{% endblock %}
+
+{% block content %}
+<h1 style="color: #667eea; margin-bottom: 20px;">My Favorite Pets</h1>
+
+<div class="card">
+    {% if favorites %}
+        <div class="pet-grid">
+            {% for favorite in favorites %}
+                {% with pet=favorite.pet %}
+                    <div class="pet-card" onclick="window.location.href='{% url 'pet_detail' pet.pk %}'">
+                        {% if pet.photo1 %}
+                            <img src="{{ pet.photo1.url }}" alt="{{ pet.name }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/300x250?text={{ pet.species }}" alt="{{ pet.name }}">
+                        {% endif %}
+                        <div class="pet-card-body">
+                            <h3>{{ pet.name }}</h3>
+                            <div class="pet-info">
+                                <span><strong>Breed:</strong> {{ pet.breed }}</span>
+                                <span class="badge {% if pet.gender == 'M' %}badge-info{% else %}badge-warning{% endif %}">
+                                    {{ pet.get_gender_display }}
+                                </span>
+                            </div>
+                            <div class="pet-info">
+                                <span><strong>Age:</strong> {{ pet.age_in_years }} year{{ pet.age_in_years|pluralize }}</span>
+                                {% if pet.is_vaccinated %}
+                                    <span class="badge badge-success">Vaccinated</span>
+                                {% endif %}
+                            </div>
+                            {% if pet.location %}
+                                <div class="pet-info">
+                                    <span><strong>Location:</strong> {{ pet.location }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endwith %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-pets">
+            <p>You haven't added any pets to your favorites yet.</p>
+            <a href="{% url 'search_pets' %}" class="btn mt-20">Find Pets</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

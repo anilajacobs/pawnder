@@ -1,0 +1,100 @@
+{% extends 'pets/base.html' %}
+
+{% block title %}Find Matches - Pawnder{% endblock %}
+
+{% block content %}
+<h1 style="color: #667eea; margin-bottom: 20px;">Find Your Perfect Match</h1>
+
+<div class="card">
+    <h3 style="margin-bottom: 15px;">Search Filters</h3>
+    <form method="get" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+        <div class="form-group">
+            <label>Species:</label>
+            {{ form.species }}
+        </div>
+
+        <div class="form-group">
+            <label>Breed:</label>
+            {{ form.breed }}
+        </div>
+
+        <div class="form-group">
+            <label>Gender:</label>
+            {{ form.gender }}
+        </div>
+
+        <div class="form-group">
+            <label>Min Age (years):</label>
+            {{ form.min_age }}
+        </div>
+
+        <div class="form-group">
+            <label>Max Age (years):</label>
+            {{ form.max_age }}
+        </div>
+
+        <div class="form-group">
+            <label>Location:</label>
+            {{ form.location }}
+        </div>
+
+        <div class="form-group">
+            <label>
+                {{ form.is_vaccinated }} Vaccinated Only
+            </label>
+        </div>
+
+        <div class="form-group" style="display: flex; align-items: flex-end;">
+            <button type="submit" class="btn">Search</button>
+        </div>
+    </form>
+</div>
+
+<div class="card mt-20">
+    <h3 style="margin-bottom: 15px;">Search Results ({{ pets.count }} pet{{ pets.count|pluralize }})</h3>
+
+    {% if pets %}
+        <div class="pet-grid">
+            {% for pet in pets %}
+                <div class="pet-card" onclick="window.location.href='{% url 'pet_detail' pet.pk %}'">
+                    {% if pet.photo1 %}
+                        <img src="{{ pet.photo1.url }}" alt="{{ pet.name }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300x250?text={{ pet.species }}" alt="{{ pet.name }}">
+                    {% endif %}
+                    <div class="pet-card-body">
+                        <h3>{{ pet.name }}</h3>
+                        <div class="pet-info">
+                            <span><strong>Breed:</strong> {{ pet.breed }}</span>
+                            <span class="badge {% if pet.gender == 'M' %}badge-info{% else %}badge-warning{% endif %}">
+                                {{ pet.get_gender_display }}
+                            </span>
+                        </div>
+                        <div class="pet-info">
+                            <span><strong>Age:</strong> {{ pet.age_in_years }} year{{ pet.age_in_years|pluralize }}</span>
+                            <span><strong>Weight:</strong> {{ pet.weight }} kg</span>
+                        </div>
+                        {% if pet.location %}
+                            <div class="pet-info">
+                                <span><strong>Location:</strong> {{ pet.location }}</span>
+                            </div>
+                        {% endif %}
+                        <div class="pet-info">
+                            {% if pet.is_vaccinated %}
+                                <span class="badge badge-success">Vaccinated</span>
+                            {% endif %}
+                            {% if pet.is_available_for_mating %}
+                                <span class="badge badge-info">Available</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-pets">
+            <p>No pets found matching your criteria. Try adjusting your filters.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

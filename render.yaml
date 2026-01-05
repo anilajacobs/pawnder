@@ -1,0 +1,26 @@
+databases:
+  - name: pawnder_db
+    databaseName: pawnder
+    user: pawnder_user
+    plan: free
+
+services:
+  - type: web
+    name: pawnder
+    runtime: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn pawnder_project.wsgi:application"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pawnder_db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DJANGO_SETTINGS_MODULE
+        value: pawnder_project.production_settings
+      - key: DEBUG
+        value: false
+      - key: PYTHON_VERSION
+        value: 3.11.0

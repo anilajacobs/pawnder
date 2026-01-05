@@ -1,0 +1,140 @@
+{% extends 'pets/base.html' %}
+
+{% block title %}Add Pet - Pawnder{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <h2 style="color: #667eea; margin-bottom: 30px;">Add Your Pet</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <h3 style="color: #764ba2; margin-bottom: 15px;">Basic Information</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+                <label>{{ form.name.label }}:</label>
+                {{ form.name }}
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.species.label }}:</label>
+                {{ form.species }}
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.breed.label }}:</label>
+                {{ form.breed }}
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.gender.label }}:</label>
+                {{ form.gender }}
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.date_of_birth.label }}:</label>
+                {{ form.date_of_birth }}
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.color.label }}:</label>
+                {{ form.color }}
+            </div>
+        </div>
+
+        <h3 style="color: #764ba2; margin: 25px 0 15px;">Physical Attributes</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+                <label>{{ form.weight.label }}:</label>
+                {{ form.weight }}
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.height.label }}:</label>
+                {{ form.height }}
+            </div>
+        </div>
+
+        <h3 style="color: #764ba2; margin: 25px 0 15px;">Health Information</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+                <label>
+                    {{ form.is_vaccinated }} {{ form.is_vaccinated.label }}
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.last_vaccination_date.label }}:</label>
+                {{ form.last_vaccination_date }}
+            </div>
+
+            <div class="form-group">
+                <label>
+                    {{ form.is_neutered }} {{ form.is_neutered.label }}
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>{{ form.health_issues.label }}:</label>
+            {{ form.health_issues }}
+        </div>
+
+        <h3 style="color: #764ba2; margin: 25px 0 15px;">Breeding Preferences</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+                <label>
+                    {{ form.is_available_for_mating }} {{ form.is_available_for_mating.label }}
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.preferred_breed.label }}:</label>
+                {{ form.preferred_breed }}
+            </div>
+        </div>
+
+        <h3 style="color: #764ba2; margin: 25px 0 15px;">Photos</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+                <label>{{ form.photo1.label }}:</label>
+                {{ form.photo1 }}
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.photo2.label }}:</label>
+                {{ form.photo2 }}
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.photo3.label }}:</label>
+                {{ form.photo3 }}
+            </div>
+        </div>
+
+        <h3 style="color: #764ba2; margin: 25px 0 15px;">Additional Information</h3>
+        <div class="form-group">
+            <label>{{ form.location.label }}:</label>
+            {{ form.location }}
+        </div>
+
+        <div class="form-group">
+            <label>{{ form.description.label }}:</label>
+            {{ form.description }}
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn" style="width: 100%;">Add Pet</button>
+        </div>
+    </form>
+</div>
+
+<style>
+    @media (max-width: 768px) {
+        div[style*="grid-template-columns: 1fr 1fr"],
+        div[style*="grid-template-columns: 1fr 1fr 1fr"] {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+{% endblock %}

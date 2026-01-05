@@ -1,0 +1,117 @@
+{% extends 'pets/base.html' %}
+
+{% block title %}My Matches - Pawnder{% endblock %}
+
+{% block content %}
+<h1 style="color: #667eea; margin-bottom: 20px;">My Matches</h1>
+
+<div class="card">
+    <h3 style="color: #764ba2; margin-bottom: 15px;">Received Requests ({{ received_matches.count }})</h3>
+
+    {% if received_matches %}
+        <div style="display: grid; gap: 15px;">
+            {% for match in received_matches %}
+                <div style="border: 1px solid #ddd; border-radius: 10px; padding: 15px; background: {% if match.status == 'PENDING' %}#fff3cd{% elif match.status == 'ACCEPTED' %}#d4edda{% else %}#f8d7da{% endif %};">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <h4>
+                                <a href="{% url 'pet_detail' match.from_pet.pk %}" style="color: #667eea; text-decoration: none;">
+                                    {{ match.from_pet.name }}
+                                </a>
+                                wants to match with
+                                <a href="{% url 'pet_detail' match.to_pet.pk %}" style="color: #667eea; text-decoration: none;">
+                                    {{ match.to_pet.name }}
+                                </a>
+                            </h4>
+                            <p style="color: #666; margin: 10px 0;">{{ match.from_pet.breed }} - {{ match.from_pet.get_gender_display }}</p>
+                            {% if match.message %}
+                                <p style="margin: 10px 0;"><strong>Message:</strong> {{ match.message }}</p>
+                            {% endif %}
+                            <p style="color: #999; font-size: 14px;">{{ match.created_at|date:"M d, Y" }}</p>
+                        </div>
+                        <div>
+                            <span class="badge {% if match.status == 'PENDING' %}badge-warning{% elif match.status == 'ACCEPTED' %}badge-success{% else %}badge-danger{% endif %}">
+                                {{ match.get_status_display }}
+                            </span>
+                        </div>
+                    </div>
+
+                    {% if match.status == 'PENDING' %}
+                        <div style="margin-top: 15px; display: flex; gap: 10px;">
+                            <a href="{% url 'respond_to_match' match.pk 'accept' %}" class="btn btn-small btn-success">Accept</a>
+                            <a href="{% url 'respond_to_match' match.pk 'reject' %}" class="btn btn-small btn-danger">Reject</a>
+                        </div>
+                    {% endif %}
+
+                    {% if match.status == 'ACCEPTED' %}
+                        <div style="margin-top: 15px; padding: 10px; background: white; border-radius: 5px;">
+                            <strong>Contact Info:</strong><br>
+                            {{ match.from_pet.owner.get_full_name|default:match.from_pet.owner.username }}<br>
+                            Email: {{ match.from_pet.owner.email }}
+                            {% if match.from_pet.owner.owner_profile.phone %}
+                                <br>Phone: {{ match.from_pet.owner.owner_profile.phone }}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-pets">
+            <p>No received match requests yet.</p>
+        </div>
+    {% endif %}
+</div>
+
+<div class="card mt-20">
+    <h3 style="color: #764ba2; margin-bottom: 15px;">Sent Requests ({{ sent_matches.count }})</h3>
+
+    {% if sent_matches %}
+        <div style="display: grid; gap: 15px;">
+            {% for match in sent_matches %}
+                <div style="border: 1px solid #ddd; border-radius: 10px; padding: 15px; background: {% if match.status == 'PENDING' %}#fff3cd{% elif match.status == 'ACCEPTED' %}#d4edda{% else %}#f8d7da{% endif %};">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <h4>
+                                <a href="{% url 'pet_detail' match.from_pet.pk %}" style="color: #667eea; text-decoration: none;">
+                                    {{ match.from_pet.name }}
+                                </a>
+                                →
+                                <a href="{% url 'pet_detail' match.to_pet.pk %}" style="color: #667eea; text-decoration: none;">
+                                    {{ match.to_pet.name }}
+                                </a>
+                            </h4>
+                            <p style="color: #666; margin: 10px 0;">{{ match.to_pet.breed }} - {{ match.to_pet.get_gender_display }}</p>
+                            {% if match.message %}
+                                <p style="margin: 10px 0;"><strong>Your Message:</strong> {{ match.message }}</p>
+                            {% endif %}
+                            <p style="color: #999; font-size: 14px;">{{ match.created_at|date:"M d, Y" }}</p>
+                        </div>
+                        <div>
+                            <span class="badge {% if match.status == 'PENDING' %}badge-warning{% elif match.status == 'ACCEPTED' %}badge-success{% else %}badge-danger{% endif %}">
+                                {{ match.get_status_display }}
+                            </span>
+                        </div>
+                    </div>
+
+                    {% if match.status == 'ACCEPTED' %}
+                        <div style="margin-top: 15px; padding: 10px; background: white; border-radius: 5px;">
+                            <strong>Contact Info:</strong><br>
+                            {{ match.to_pet.owner.get_full_name|default:match.to_pet.owner.username }}<br>
+                            Email: {{ match.to_pet.owner.email }}
+                            {% if match.to_pet.owner.owner_profile.phone %}
+                                <br>Phone: {{ match.to_pet.owner.owner_profile.phone }}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-pets">
+            <p>You haven't sent any match requests yet.</p>
+            <a href="{% url 'search_pets' %}" class="btn mt-20">Find Matches</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

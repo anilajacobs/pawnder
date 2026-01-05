@@ -1,0 +1,113 @@
+{% extends 'pets/base.html' %}
+
+{% block title %}My Profile - Pawnder{% endblock %}
+
+{% block content %}
+<h1 style="color: #667eea; margin-bottom: 20px;">My Profile</h1>
+
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
+    <div class="card">
+        <h3 style="color: #764ba2; margin-bottom: 15px;">Profile Information</h3>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Name:</label>
+                <p>{{ user.get_full_name|default:user.username }}</p>
+            </div>
+
+            <div class="form-group">
+                <label>Email:</label>
+                <p>{{ user.email }}</p>
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.phone.label }}:</label>
+                {{ form.phone }}
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.address.label }}:</label>
+                {{ form.address }}
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.city.label }}:</label>
+                {{ form.city }}
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.state.label }}:</label>
+                {{ form.state }}
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.zipcode.label }}:</label>
+                {{ form.zipcode }}
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.profile_picture.label }}:</label>
+                {{ form.profile_picture }}
+                {% if owner_profile.profile_picture %}
+                    <img src="{{ owner_profile.profile_picture.url }}" alt="Profile Picture" style="max-width: 200px; margin-top: 10px; border-radius: 5px;">
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn">Update Profile</button>
+        </form>
+    </div>
+
+    <div>
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="color: #764ba2;">My Pets</h3>
+                <a href="{% url 'add_pet' %}" class="btn btn-small">Add New Pet</a>
+            </div>
+
+            {% if my_pets %}
+                <div class="pet-grid">
+                    {% for pet in my_pets %}
+                        <div class="pet-card" onclick="window.location.href='{% url 'pet_detail' pet.pk %}'">
+                            {% if pet.photo1 %}
+                                <img src="{{ pet.photo1.url }}" alt="{{ pet.name }}">
+                            {% else %}
+                                <img src="https://via.placeholder.com/300x250?text={{ pet.species }}" alt="{{ pet.name }}">
+                            {% endif %}
+                            <div class="pet-card-body">
+                                <h3>{{ pet.name }}</h3>
+                                <div class="pet-info">
+                                    <span><strong>Breed:</strong> {{ pet.breed }}</span>
+                                    <span class="badge {% if pet.gender == 'M' %}badge-info{% else %}badge-warning{% endif %}">
+                                        {{ pet.get_gender_display }}
+                                    </span>
+                                </div>
+                                <div class="pet-info">
+                                    <span><strong>Age:</strong> {{ pet.age_in_years }} year{{ pet.age_in_years|pluralize }}</span>
+                                    {% if pet.is_available_for_mating %}
+                                        <span class="badge badge-success">Available</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-pets">
+                    <p>You haven't added any pets yet.</p>
+                    <a href="{% url 'add_pet' %}" class="btn mt-20">Add Your First Pet</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    @media (max-width: 768px) {
+        div[style*="grid-template-columns: 1fr 2fr"] {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+{% endblock %}

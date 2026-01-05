@@ -1,0 +1,182 @@
+{% extends 'pets/base.html' %}
+
+{% block title %}{{ pet.name }} - Pawnder{% endblock %}
+
+{% block content %}
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div class="card">
+        {% if pet.photo1 %}
+            <img src="{{ pet.photo1.url }}" alt="{{ pet.name }}" style="width: 100%; border-radius: 10px; margin-bottom: 15px;">
+        {% else %}
+            <img src="https://via.placeholder.com/600x400?text={{ pet.species }}" alt="{{ pet.name }}" style="width: 100%; border-radius: 10px; margin-bottom: 15px;">
+        {% endif %}
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            {% if pet.photo2 %}
+                <img src="{{ pet.photo2.url }}" alt="{{ pet.name }}" style="width: 100%; border-radius: 5px;">
+            {% endif %}
+            {% if pet.photo3 %}
+                <img src="{{ pet.photo3.url }}" alt="{{ pet.name }}" style="width: 100%; border-radius: 5px;">
+            {% endif %}
+        </div>
+    </div>
+
+    <div>
+        <div class="card">
+            <h1 style="color: #667eea; margin-bottom: 10px;">{{ pet.name }}</h1>
+            <p style="color: #666; margin-bottom: 20px;">{{ pet.breed }} - {{ pet.get_species_display }}</p>
+
+            {% if is_owner %}
+                <div style="margin-bottom: 20px;">
+                    <a href="{% url 'edit_pet' pet.pk %}" class="btn btn-small">Edit Profile</a>
+                    <a href="{% url 'add_vaccination' pet.pk %}" class="btn btn-small btn-success">Add Vaccination</a>
+                </div>
+            {% else %}
+                <div style="margin-bottom: 20px;">
+                    {% if user.is_authenticated %}
+                        {% if not has_pending_match %}
+                            <a href="{% url 'send_match_request' pet.pk %}" class="btn">Send Match Request</a>
+                        {% else %}
+                            <button class="btn" disabled>Match Request Sent</button>
+                        {% endif %}
+                        <a href="{% url 'toggle_favorite' pet.pk %}" class="btn {% if is_favorited %}btn-danger{% else %}btn-success{% endif %} btn-small">
+                            {% if is_favorited %}Remove from Favorites{% else %}Add to Favorites{% endif %}
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn">Login to Send Match Request</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <h3 style="color: #764ba2; margin-bottom: 10px;">Basic Information</h3>
+            <table style="width: 100%; margin-bottom: 20px;">
+                <tr>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Gender:</strong></td>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ pet.get_gender_display }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Age:</strong></td>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ pet.age_in_years }} year{{ pet.age_in_years|pluralize }} ({{ pet.age_in_months }} months)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Date of Birth:</strong></td>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ pet.date_of_birth }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Weight:</strong></td>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ pet.weight }} kg</td>
+                </tr>
+                {% if pet.height %}
+                    <tr>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Height:</strong></td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ pet.height }} cm</td>
+                    </tr>
+                {% endif %}
+                {% if pet.color %}
+                    <tr>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Color:</strong></td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ pet.color }}</td>
+                    </tr>
+                {% endif %}
+                {% if pet.location %}
+                    <tr>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Location:</strong></td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ pet.location }}</td>
+                    </tr>
+                {% endif %}
+            </table>
+
+            <h3 style="color: #764ba2; margin-bottom: 10px;">Health Information</h3>
+            <table style="width: 100%; margin-bottom: 20px;">
+                <tr>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Vaccinated:</strong></td>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee;">
+                        {% if pet.is_vaccinated %}
+                            <span class="badge badge-success">Yes</span>
+                        {% else %}
+                            <span class="badge badge-warning">No</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% if pet.last_vaccination_date %}
+                    <tr>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Last Vaccination:</strong></td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ pet.last_vaccination_date }}</td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Neutered:</strong></td>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ pet.is_neutered|yesno:"Yes,No" }}</td>
+                </tr>
+                {% if pet.health_issues %}
+                    <tr>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Health Issues:</strong></td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ pet.health_issues }}</td>
+                    </tr>
+                {% endif %}
+            </table>
+
+            <h3 style="color: #764ba2; margin-bottom: 10px;">Breeding Information</h3>
+            <table style="width: 100%;">
+                <tr>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Available for Mating:</strong></td>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee;">
+                        {% if pet.is_available_for_mating %}
+                            <span class="badge badge-success">Yes</span>
+                        {% else %}
+                            <span class="badge badge-warning">No</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% if pet.preferred_breed %}
+                    <tr>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;"><strong>Preferred Breed:</strong></td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee;">{{ pet.preferred_breed }}</td>
+                    </tr>
+                {% endif %}
+            </table>
+
+            {% if pet.description %}
+                <h3 style="color: #764ba2; margin-top: 20px; margin-bottom: 10px;">About {{ pet.name }}</h3>
+                <p style="line-height: 1.8;">{{ pet.description }}</p>
+            {% endif %}
+        </div>
+
+        {% if vaccinations %}
+            <div class="card mt-20">
+                <h3 style="color: #764ba2; margin-bottom: 15px;">Vaccination Records</h3>
+                {% for vaccination in vaccinations %}
+                    <div style="padding: 10px; border-left: 3px solid #28a745; background: #f8f9fa; margin-bottom: 10px; border-radius: 5px;">
+                        <strong>{{ vaccination.get_vaccine_type_display }}</strong>
+                        {% if vaccination.vaccine_name %}
+                            <br><small>{{ vaccination.vaccine_name }}</small>
+                        {% endif %}
+                        <br><small>Date: {{ vaccination.date_administered }}</small>
+                        {% if vaccination.next_due_date %}
+                            <br><small>Next Due: {{ vaccination.next_due_date }}</small>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mt-20">
+    <h3 style="color: #764ba2; margin-bottom: 10px;">Owner Information</h3>
+    <p><strong>Name:</strong> {{ pet.owner.get_full_name|default:pet.owner.username }}</p>
+    {% if is_owner or user.is_authenticated %}
+        {% if pet.owner.owner_profile.city %}
+            <p><strong>City:</strong> {{ pet.owner.owner_profile.city }}, {{ pet.owner.owner_profile.state }}</p>
+        {% endif %}
+    {% endif %}
+</div>
+
+<style>
+    @media (max-width: 768px) {
+        div[style*="grid-template-columns: 1fr 1fr"] {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+{% endblock %}
