@@ -58,9 +58,13 @@
             {% for pet in pets %}
                 <div class="pet-card" onclick="window.location.href='{% url 'pet_detail' pet.pk %}'">
                     {% if pet.photo1 %}
-                        <img src="{{ pet.photo1.url }}" alt="{{ pet.name }}">
+                        <img src="{{ pet.photo1.url }}" alt="{{ pet.name }}" onerror="this.src='https://placedog.net/600/400?id={{ pet.id }}'">
+                    {% elif pet.species == 'DOG' %}
+                        <img src="https://placedog.net/600/400?id={{ pet.id }}" alt="{{ pet.name }}">
+                    {% elif pet.species == 'CAT' %}
+                        <img src="https://placekitten.com/600/400" alt="{{ pet.name }}">
                     {% else %}
-                        <img src="https://via.placeholder.com/300x250?text={{ pet.species }}" alt="{{ pet.name }}">
+                        <img src="https://via.placeholder.com/600x400/667eea/ffffff?text={{ pet.name }}" alt="{{ pet.name }}">
                     {% endif %}
                     <div class="pet-card-body">
                         <h3>{{ pet.name }}</h3>

@@ -6,17 +6,25 @@
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
     <div class="card">
         {% if pet.photo1 %}
-            <img src="{{ pet.photo1.url }}" alt="{{ pet.name }}" style="width: 100%; border-radius: 10px; margin-bottom: 15px;">
+            <img src="{{ pet.photo1.url }}" alt="{{ pet.name }}" style="width: 100%; border-radius: 10px; margin-bottom: 15px;" onerror="this.src='https://placedog.net/600/400?id={{ pet.id }}'">
+        {% elif pet.species == 'DOG' %}
+            <img src="https://placedog.net/600/400?id={{ pet.id }}" alt="{{ pet.name }}" style="width: 100%; border-radius: 10px; margin-bottom: 15px;">
+        {% elif pet.species == 'CAT' %}
+            <img src="https://placekitten.com/600/400" alt="{{ pet.name }}" style="width: 100%; border-radius: 10px; margin-bottom: 15px;">
         {% else %}
-            <img src="https://via.placeholder.com/600x400?text={{ pet.species }}" alt="{{ pet.name }}" style="width: 100%; border-radius: 10px; margin-bottom: 15px;">
+            <img src="https://via.placeholder.com/600x400/667eea/ffffff?text={{ pet.name }}" alt="{{ pet.name }}" style="width: 100%; border-radius: 10px; margin-bottom: 15px;">
         {% endif %}
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             {% if pet.photo2 %}
-                <img src="{{ pet.photo2.url }}" alt="{{ pet.name }}" style="width: 100%; border-radius: 5px;">
+                <img src="{{ pet.photo2.url }}" alt="{{ pet.name }}" style="width: 100%; border-radius: 5px;" onerror="this.src='https://placedog.net/400/300?id={{ pet.id|add:100 }}'">
+            {% elif pet.species == 'DOG' %}
+                <img src="https://placedog.net/400/300?id={{ pet.id|add:100 }}" alt="{{ pet.name }}" style="width: 100%; border-radius: 5px;">
             {% endif %}
             {% if pet.photo3 %}
-                <img src="{{ pet.photo3.url }}" alt="{{ pet.name }}" style="width: 100%; border-radius: 5px;">
+                <img src="{{ pet.photo3.url }}" alt="{{ pet.name }}" style="width: 100%; border-radius: 5px;" onerror="this.src='https://placedog.net/400/300?id={{ pet.id|add:200 }}'">
+            {% elif pet.species == 'DOG' %}
+                <img src="https://placedog.net/400/300?id={{ pet.id|add:200 }}" alt="{{ pet.name }}" style="width: 100%; border-radius: 5px;">
             {% endif %}
         </div>
     </div>

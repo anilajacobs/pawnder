@@ -49,13 +49,23 @@ def setup_initial_data(request):
 
             try:
                 # Load sample pets and users
-                output.write("[1/2] Creating sample pets and users...\n")
+                output.write("[1/3] Creating sample pets and users...\n")
                 call_command('populate_sample_data')
                 output.write("\n")
 
-                # Download photos
-                output.write("[2/2] Downloading pet photos...\n")
-                call_command('ensure_all_photos')
+                # Download photos with stable URLs
+                output.write("[2/3] Downloading pet photos from Unsplash...\n")
+                try:
+                    call_command('use_stable_image_urls')
+                except Exception as e:
+                    output.write(f"⚠️ Photo download issue: {e}\n")
+                    output.write("Trying backup method...\n")
+                    try:
+                        call_command('ensure_all_photos')
+                    except:
+                        output.write("⚠️ Photos may not load. You can upload them via admin.\n")
+
+                output.write("\n[3/3] Verifying setup...\n")
 
             finally:
                 sys.stdout = old_stdout
