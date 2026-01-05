@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views_admin import setup_initial_data
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -23,4 +24,7 @@ urlpatterns = [
     # Favorites
     path('pet/<int:pet_pk>/favorite/', views.toggle_favorite, name='toggle_favorite'),
     path('favorites/', views.favorites, name='favorites'),
+
+    # Admin utility - one-time setup
+    path('setup-data/', setup_initial_data, name='setup_data'),
 ]
